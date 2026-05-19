@@ -253,6 +253,67 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <script>
+        // Initialize date/time picker
+        $('#date3').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm'
+        });
+
+        // Handle form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const datetime = document.getElementById('datetime').value.trim();
+            const people = document.getElementById('select1').value;
+            const message = document.getElementById('message').value.trim();
+
+            // Validation
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+            if (!email || !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                alert('Please enter a valid email');
+                return;
+            }
+            if (!datetime) {
+                alert('Please select date and time');
+                return;
+            }
+
+            // Submit to backend
+            const bookingData = {
+                name: name,
+                email: email,
+                datetime: datetime,
+                people: parseInt(people),
+                message: message
+            };
+
+            fetch('http://localhost:5000/api/bookings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bookingData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`✓ ${data.message}\n\nWe sent a confirmation email to ${email}`);
+                    document.querySelector('form').reset();
+                } else {
+                    alert('✗ Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('✗ Connection error. Make sure the backend server is running.');
+                console.error('Error:', error);
+            });
+        });
+    </script>
 </body>
 
 </html>
