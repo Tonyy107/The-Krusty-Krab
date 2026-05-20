@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>The Krusty Krab - Admin Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link href="img/favicon.ico" rel="icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #101010;
+            --paper: #f7f3ea;
+            --accent: #fea116;
+            --accent-dark: #d98500;
+            --soft: #fff7ea;
+            --line: #1d1d1d;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #f3efe7;
+            color: var(--ink);
+        }
+
+        .dashboard-shell {
+            min-height: 100vh;
+            background:
+                linear-gradient(180deg, rgba(16, 16, 16, 0.04) 0, rgba(16, 16, 16, 0.04) 100%),
+                #f3efe7;
+        }
+
+        .nav-admin {
+            border-bottom: 4px solid var(--line);
+            box-shadow: 0 10px 0 rgba(16, 16, 16, 0.08);
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: .65rem;
+            font-weight: 900;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .brand-badge {
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--line);
+            border-radius: 12px;
+            background: var(--accent);
+            color: var(--line);
+            box-shadow: 4px 4px 0 var(--line);
+        }
+
+        .page-hero {
+            border: 4px solid var(--line);
+            background: var(--paper);
+            box-shadow: 10px 10px 0 var(--line);
+        }
+
+        .stat-card,
+        .panel-card {
+            border: 4px solid var(--line);
+            box-shadow: 8px 8px 0 var(--line);
+            background: #fff;
+        }
+
+        .stat-value {
+            font-size: 2.3rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .stat-label {
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            font-size: .78rem;
+            font-weight: 800;
+            color: #555;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .35rem .75rem;
+            border: 3px solid var(--line);
+            background: var(--soft);
+            font-weight: 800;
+        }
+
+        .btn-brutal {
+            border: 3px solid var(--line);
+            background: var(--accent);
+            color: var(--line);
+            font-weight: 900;
+            box-shadow: 4px 4px 0 var(--line);
+        }
+
+        .btn-brutal:hover,
+        .btn-brutal:focus {
+            background: var(--accent-dark);
+            color: #fff;
+            box-shadow: 2px 2px 0 var(--line);
+        }
+
+        .btn-outline-brutal {
+            border: 3px solid var(--line);
+            background: #fff;
+            color: var(--line);
+            font-weight: 800;
+            box-shadow: 4px 4px 0 var(--line);
+        }
+
+        .btn-outline-brutal:hover {
+            background: #f4f4f4;
+            color: var(--line);
+        }
+
+        .table thead th {
+            background: var(--ink);
+            color: #fff;
+            border-color: var(--line);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            font-size: .78rem;
+        }
+
+        .table td,
+        .table th {
+            vertical-align: middle;
+            border-color: #d9d4c8;
+        }
+
+        .search-input {
+            border: 3px solid var(--line);
+            box-shadow: 4px 4px 0 var(--line);
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            background: #3cb371;
+        }
+
+        .status-dot.warn {
+            background: #ffb000;
+        }
+
+        .status-dot.neutral {
+            background: #777;
+        }
+
+        .small-muted {
+            color: #666;
+        }
+
+        .empty-state {
+            border: 3px dashed #999;
+            background: #faf8f2;
+        }
+
+        @media (max-width: 991px) {
+            .stat-value {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-shell">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 py-3 nav-admin">
+            <a class="navbar-brand p-0" href="index.html">
+                <span class="brand-mark text-white">
+                    <span class="brand-badge"><i class="fa fa-utensils"></i></span>
+                    <span>The Krusty Krab</span>
+                </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+                <span class="fa fa-bars"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="adminNav">
+                <div class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                    <a href="index.html" class="nav-item nav-link">Public Site</a>
+                    <a href="booking.html" class="nav-item nav-link">Booking Page</a>
+                    <a href="admin.html" class="nav-item nav-link active">Admin Dashboard</a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container py-4 py-lg-5">
+            <section class="page-hero rounded-4 p-4 p-lg-5 mb-4">
+                <div class="d-flex flex-column flex-lg-row gap-3 align-items-lg-center justify-content-between">
+                    <div>
+                        <span class="pill mb-3"><i class="bi bi-speedometer2"></i> Admin Control Center</span>
+                        <h1 class="display-5 fw-black fw-bolder mb-2">Reservation Dashboard</h1>
+                        <p class="mb-0 small-muted">Monitor table bookings, review guest volume, and spot upcoming reservations at a glance.</p>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button id="refreshButton" class="btn btn-brutal px-4 py-3" type="button">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Refresh data
+                        </button>
+                        <a class="btn btn-outline-brutal px-4 py-3" href="booking.html">
+                            <i class="bi bi-journal-plus me-2"></i>Open booking form
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="row g-4 mb-4">
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card rounded-4 p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label">Total bookings</div>
+                                <div class="stat-value" id="totalBookings">0</div>
+                            </div>
+                            <div class="brand-badge"><i class="bi bi-calendar-check"></i></div>
+                        </div>
+                        <p class="mb-0 mt-3 small-muted">All reservations currently stored in the database.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card rounded-4 p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label">Today's bookings</div>
+                                <div class="stat-value" id="todayBookings">0</div>
+                            </div>
+                            <div class="brand-badge"><i class="bi bi-clock-history"></i></div>
+                        </div>
+                        <p class="mb-0 mt-3 small-muted">Reservations starting today.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card rounded-4 p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label">Upcoming bookings</div>
+                                <div class="stat-value" id="upcomingBookings">0</div>
+                            </div>
+                            <div class="brand-badge"><i class="bi bi-calendar-event"></i></div>
+                        </div>
+                        <p class="mb-0 mt-3 small-muted">Reservations with future check-ins.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card rounded-4 p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label">Guests tracked</div>
+                                <div class="stat-value" id="totalGuests">0</div>
+                            </div>
+                            <div class="brand-badge"><i class="bi bi-people-fill"></i></div>
+                        </div>
+                        <p class="mb-0 mt-3 small-muted">Total party size across all bookings.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="row g-4">
+                <div class="col-lg-4">
+                    <div class="panel-card rounded-4 p-4 h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h2 class="h4 fw-bolder mb-0">Latest booking</h2>
+                            <span class="pill"><i class="bi bi-stars"></i> Live</span>
+                        </div>
+                        <div id="latestBooking" class="empty-state rounded-4 p-4">
+                            <p class="mb-0 small-muted">No bookings yet.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="panel-card rounded-4 p-4 h-100">
+                        <div class="d-flex flex-column flex-md-row gap-3 align-items-md-center justify-content-between mb-3">
+                            <div>
+                                <h2 class="h4 fw-bolder mb-1">Bookings table</h2>
+                                <p class="mb-0 small-muted">Search by name, email, or date to quickly find a reservation.</p>
+                            </div>
+                            <div class="w-100" style="max-width: 320px;">
+                                <input id="searchInput" type="search" class="form-control search-input py-3" placeholder="Search bookings...">
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Check-in</th>
+                                        <th>Check-out</th>
+                                        <th>People</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingsTableBody">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5">
+                                            <div class="small-muted">Loading bookings...</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const state = {
+            bookings: [],
+            summary: null
+        };
+
+        const elements = {
+            totalBookings: document.getElementById('totalBookings'),
+            todayBookings: document.getElementById('todayBookings'),
+            upcomingBookings: document.getElementById('upcomingBookings'),
+            totalGuests: document.getElementById('totalGuests'),
+            latestBooking: document.getElementById('latestBooking'),
+            bookingsTableBody: document.getElementById('bookingsTableBody'),
+            searchInput: document.getElementById('searchInput'),
+            refreshButton: document.getElementById('refreshButton')
+        };
+
+        function formatDateTime(value) {
+            if (!value) {
+                return '—';
+            }
+
+            const date = new Date(value.replace(' ', 'T'));
+            if (Number.isNaN(date.getTime())) {
+                return value;
+            }
+
+            return new Intl.DateTimeFormat(undefined, {
+                dateStyle: 'medium',
+                timeStyle: 'short'
+            }).format(date);
+        }
+
+        function createCell(text) {
+            const td = document.createElement('td');
+            td.textContent = text;
+            return td;
+        }
+
+        function renderLatestBooking(booking) {
+            elements.latestBooking.innerHTML = '';
+
+            if (!booking) {
+                const empty = document.createElement('p');
+                empty.className = 'mb-0 small-muted';
+                empty.textContent = 'No bookings yet.';
+                elements.latestBooking.appendChild(empty);
+                return;
+            }
+
+            const title = document.createElement('h3');
+            title.className = 'h5 fw-bolder mb-2';
+            title.textContent = booking.name;
+
+            const meta = document.createElement('div');
+            meta.className = 'd-grid gap-2';
+
+            const rows = [
+                ['Email', booking.email],
+                ['Check-in', formatDateTime(booking.checkin_datetime)],
+                ['Check-out', formatDateTime(booking.checkout_datetime)],
+                ['Guests', String(booking.people)],
+                ['Message', booking.message || 'No special request'],
+            ];
+
+            rows.forEach(([label, value]) => {
+                const row = document.createElement('div');
+                row.className = 'd-flex justify-content-between gap-3 border-bottom py-2';
+                const left = document.createElement('span');
+                left.className = 'fw-bold';
+                left.textContent = label;
+                const right = document.createElement('span');
+                right.className = 'text-end';
+                right.textContent = value;
+                row.append(left, right);
+                meta.appendChild(row);
+            });
+
+            elements.latestBooking.append(title, meta);
+        }
+
+        function renderBookingsTable() {
+            const query = elements.searchInput.value.trim().toLowerCase();
+            const filteredBookings = state.bookings.filter((booking) => {
+                const searchable = [
+                    booking.name,
+                    booking.email,
+                    booking.checkin_datetime,
+                    booking.checkout_datetime,
+                    String(booking.people),
+                    booking.message,
+                    booking.created_at
+                ].join(' ').toLowerCase();
+
+                return searchable.includes(query);
+            });
+
+            elements.bookingsTableBody.innerHTML = '';
+
+            if (!filteredBookings.length) {
+                const row = document.createElement('tr');
+                const cell = document.createElement('td');
+                cell.colSpan = 5;
+                cell.className = 'text-center py-5';
+                cell.textContent = query ? 'No bookings match your search.' : 'No bookings found.';
+                row.appendChild(cell);
+                elements.bookingsTableBody.appendChild(row);
+                return;
+            }
+
+            filteredBookings.forEach((booking) => {
+                const row = document.createElement('tr');
+
+                const nameCell = document.createElement('td');
+                const nameStrong = document.createElement('div');
+                nameStrong.className = 'fw-bolder';
+                nameStrong.textContent = booking.name;
+                const emailSmall = document.createElement('div');
+                emailSmall.className = 'small-muted';
+                emailSmall.textContent = booking.email;
+                nameCell.append(nameStrong, emailSmall);
+
+                row.append(
+                    nameCell,
+                    createCell(formatDateTime(booking.checkin_datetime)),
+                    createCell(formatDateTime(booking.checkout_datetime)),
+                    createCell(String(booking.people)),
+                    createCell(formatDateTime(booking.created_at))
+                );
+
+                elements.bookingsTableBody.appendChild(row);
+            });
+        }
+
+        function updateSummary(summary) {
+            elements.totalBookings.textContent = summary.total_bookings ?? 0;
+            elements.todayBookings.textContent = summary.today_bookings ?? 0;
+            elements.upcomingBookings.textContent = summary.upcoming_bookings ?? 0;
+            elements.totalGuests.textContent = summary.total_guests ?? 0;
+            renderLatestBooking(summary.latest_booking);
+        }
+
+        async function loadDashboard() {
+            elements.refreshButton.disabled = true;
+            elements.refreshButton.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Refreshing...';
+
+            try {
+                const [summaryResponse, bookingsResponse] = await Promise.all([
+                    fetch('/api/admin/summary'),
+                    fetch('/api/bookings')
+                ]);
+
+                const summaryData = await summaryResponse.json();
+                const bookingsData = await bookingsResponse.json();
+
+                if (!summaryData.success) {
+                    throw new Error(summaryData.error || 'Failed to load summary');
+                }
+
+                if (!bookingsData.success) {
+                    throw new Error(bookingsData.error || 'Failed to load bookings');
+                }
+
+                state.summary = summaryData.summary;
+                state.bookings = bookingsData.bookings || [];
+
+                updateSummary(state.summary);
+                renderBookingsTable();
+            } catch (error) {
+                elements.bookingsTableBody.innerHTML = '';
+                const row = document.createElement('tr');
+                const cell = document.createElement('td');
+                cell.colSpan = 5;
+                cell.className = 'text-center py-5 text-danger fw-bold';
+                cell.textContent = error.message || 'Failed to load dashboard data.';
+                row.appendChild(cell);
+                elements.bookingsTableBody.appendChild(row);
+
+                elements.latestBooking.innerHTML = '';
+                const empty = document.createElement('p');
+                empty.className = 'mb-0 text-danger fw-bold';
+                empty.textContent = error.message || 'Failed to load latest booking.';
+                elements.latestBooking.appendChild(empty);
+            } finally {
+                elements.refreshButton.disabled = false;
+                elements.refreshButton.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Refresh data';
+            }
+        }
+
+        elements.searchInput.addEventListener('input', renderBookingsTable);
+        elements.refreshButton.addEventListener('click', loadDashboard);
+
+        loadDashboard();
+    </script>
+</body>
+
+</html>
