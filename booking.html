@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Restoran - Bootstrap Restaurant Template</title>
+    <title>The Krusty Krab - Table Reservation</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -20,16 +20,26 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
+    <!-- Date Range Picker Stylesheet -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
     <!-- Libraries Stylesheet -->
     <link href="lib/animate/animate.min.css" rel="stylesheet">
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <style>
+        .booking-section { background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); }
+        .form-floating > label { color: #ffc107; }
+        .btn-primary { background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); border: none; }
+        .btn-primary:hover { background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%); }
+        .navbar-brand h1 { font-weight: 700; letter-spacing: 1px; }
+        .reservation-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+    </style>
 </head>
 
 <body>
@@ -47,8 +57,7 @@
         <div class="container-xxl position-relative p-0">
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 px-lg-5 py-3 py-lg-0">
                 <a href="" class="navbar-brand p-0">
-                    <h1 class="text-primary m-0"><i class="fa fa-utensils me-3"></i>Restoran</h1>
-                    <!-- <img src="img/logo.png" alt="Logo"> -->
+                    <h1 class="text-primary m-0"><i class="fa fa-utensils me-3"></i>The Krusty Krab</h1>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="fa fa-bars"></span>
@@ -67,6 +76,7 @@
                                 <a href="testimonial.html" class="dropdown-item">Testimonial</a>
                             </div>
                         </div>
+                        <a href="admin.html" class="nav-item nav-link">Admin</a>
                         <a href="contact.html" class="nav-item nav-link">Contact</a>
                     </div>
                     <a href="" class="btn btn-primary py-2 px-4">Book A Table</a>
@@ -117,12 +127,14 @@
                                         <label for="email">Your Email</label>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating date" id="date3" data-target-input="nearest">
-                                        <input type="text" class="form-control datetimepicker-input" id="datetime" placeholder="Date & Time" data-target="#date3" data-toggle="datetimepicker" />
-                                        <label for="datetime">Date & Time</label>
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="daterange" placeholder="Select Check-in & Check-out Date/Time">
+                                        <label for="daterange">Check-in & Check-out Date/Time</label>
                                     </div>
                                 </div>
+                                <input type="hidden" id="checkin_datetime" />
+                                <input type="hidden" id="checkout_datetime" />
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <select class="form-select" id="select1">
@@ -214,7 +226,7 @@
                 <div class="copyright">
                     <div class="row">
                         <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                            &copy; <a class="border-bottom" href="#">Your Site Name</a>, All Right Reserved. 
+                            &copy; <a class="border-bottom" href="#">The Krusty Krab</a>, All Rights Reserved. 
 							
 							<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
 							Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a><br><br>
@@ -242,17 +254,103 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.js"></script>
     <script src="lib/wow/wow.min.js"></script>
     <script src="lib/easing/easing.min.js"></script>
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="lib/counterup/counterup.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <script>
+        // Initialize Date Range Picker
+        $('#daterange').daterangepicker({
+            timePicker: true,
+            timePickerIncrement: 30,
+            startDate: moment(),
+            endDate: moment().add(1, 'hour'),
+            locale: {
+                format: 'YYYY-MM-DD HH:mm'
+            },
+            minDate: moment(),
+            opens: 'center',
+            autoApply: false
+        });
+
+        // Update hidden fields when range is selected
+        $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+            $('#checkin_datetime').val(picker.startDate.format('YYYY-MM-DD HH:mm'));
+            $('#checkout_datetime').val(picker.endDate.format('YYYY-MM-DD HH:mm'));
+        });
+
+        // Handle form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const checkin = document.getElementById('checkin_datetime').value.trim();
+            const checkout = document.getElementById('checkout_datetime').value.trim();
+            const people = document.getElementById('select1').value;
+            const message = document.getElementById('message').value.trim();
+
+            // Validation
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+            if (!email || !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                alert('Please enter a valid email');
+                return;
+            }
+            if (!checkin || !checkout) {
+                alert('Please select check-in and check-out date/time');
+                return;
+            }
+
+            // Validate checkout is after checkin
+            const checkinTime = moment(checkin, 'YYYY-MM-DD HH:mm');
+            const checkoutTime = moment(checkout, 'YYYY-MM-DD HH:mm');
+            if (checkoutTime.isBefore(checkinTime) || checkoutTime.isSame(checkinTime)) {
+                alert('Check-out time must be after check-in time');
+                return;
+            }
+
+            // Submit to backend
+            const bookingData = {
+                name: name,
+                email: email,
+                checkin_datetime: checkin,
+                checkout_datetime: checkout,
+                people: parseInt(people),
+                message: message
+            };
+
+            fetch('http://localhost:5000/api/bookings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bookingData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`✓ ${data.message}\n\nCheck-in: ${checkin}\nCheck-out: ${checkout}\n\nWe sent a confirmation email to ${email}`);
+                    document.querySelector('form').reset();
+                    $('#daterange').val('');
+                } else {
+                    alert('✗ Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('✗ Connection error. Make sure the backend server is running.');
+                console.error('Error:', error);
+            });
+        });
+    </script>
 </body>
 
 </html>
